@@ -23,8 +23,8 @@ def main():
     # config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom","imu/data"]
     # config["dataset"] = ["acs" ,"lidar", "pos","obs","imu"]
     #
-    config["hz"] = 4
-    config["traj_steps"] = 8
+    config["hz"] = 10
+    config["traj_steps"] = 21
     config["goal_steps"] = 500
     config["output_dir"] = args.output_dir
     config["bagfile_dir"] = args.rosbag_dir

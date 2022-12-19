@@ -12,16 +12,16 @@ def main():
     print("\n" + "==== Config Creater ====" + "\n")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/all")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/badgr10hz21")
+    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/syuukai")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test_4hz")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config2/")
     args = parser.parse_args()
 
     config = {}
     config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom"]
     config["dataset"] = ["acs" ,"lidar", "pos","obs"]
-    config["hz"] = 10
-    config["traj_steps"] = 21
+    config["hz"] = 2.5
+    config["traj_steps"] = 5
     config["goal_steps"] = 500
     config["output_dir"] = args.output_dir
     config["bagfile_dir"] = args.rosbag_dir

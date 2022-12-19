@@ -13,7 +13,7 @@ class RosbagHandler:
         except Exception as e:
             rospy.logfatal('failed to load bag file:%s', e)
             exit(1)
-        TopicTuple = collections.namedtuple("TopicTuple", ["msg_type", "message_count", "connections", "frequency"]) 
+        TopicTuple = collections.namedtuple("TopicTuple", ["msg_type", "message_count", "connections", "frequency"])
         TypesAndTopicsTuple =  collections.namedtuple("TypesAndTopicsTuple", ["msg_types", "topics"])
         self.info = self.bag.get_type_and_topic_info()
         for topic, topic_info in self.info.topics.items():
@@ -58,7 +58,7 @@ class RosbagHandler:
     def convert_data(self, data, hz):
         data_ = {}
         start_time = 0
-        end_time = np.inf 
+        end_time = np.inf
         idx = {}
         for topic in data.keys():
             start_time = max(start_time, data[topic][0][0])

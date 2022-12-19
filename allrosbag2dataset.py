@@ -12,8 +12,8 @@ def main():
     print("\n" + "==== Config Creater ====" + "\n")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/badgr_base_3img/")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/badgr4hz_224/")
+    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/syuukai/")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test2hz/")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config/")
     args = parser.parse_args()
 
