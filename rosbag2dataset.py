@@ -22,9 +22,9 @@ if __name__ == '__main__':
 
     model_type = config["midas_type"]
     use_midas = config["use_midas"]
-    devide_count = config["devide_count"]
+    divide_count = config["divide_count"]
     hz = config["hz"]
-    devide_time = 1.0 / hz /devide_count
+    divide_time = 1.0 / hz /divide_count
 
     if use_midas:
         midas = torch.hub.load("intel-isl/MiDaS", model_type)
@@ -51,8 +51,8 @@ if __name__ == '__main__':
         rosbag_handler = RosbagHandler(bagfile)
 
         file_count = 0
-        for each_devide_count in range(devide_count):
-            t0 = rosbag_handler.start_time + each_devide_count * devide_time
+        for each_divide_count in range(divide_count):
+            t0 = rosbag_handler.start_time + each_divide_count * divide_time
             t1 = rosbag_handler.end_time
             sample_data = rosbag_handler.read_messages(topics=config["topics"], start_time=t0, end_time=t1, hz=config["hz"])
             dataset = {}
@@ -154,6 +154,6 @@ if __name__ == '__main__':
                 file_count += 1
         with open(os.path.join(out_dir, 'info.txt'), 'w') as f:
             info = config
-            info['num_steps'] = num_steps * devide_count
-            info['num_traj'] = num_traj * devide_count
+            info['num_steps'] = num_steps * divide_count
+            info['num_traj'] = num_traj * divide_count
             json.dump(info, f)

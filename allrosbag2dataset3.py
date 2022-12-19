@@ -34,7 +34,7 @@ def main():
     config["height"] = 224
     config["midas_type"] = "MiDaS_small"
     config["use_midas"] = False
-    config["devide_count"] = 2
+    config["divide_count"] = 2
 
     count = 1
     rosbag_names = []
