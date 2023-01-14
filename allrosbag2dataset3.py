@@ -13,16 +13,16 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/test/")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test_5hz_2devide")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test_goal")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config3/")
     args = parser.parse_args()
 
     config = {}
     config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom","front_laser/scan"]
-    config["dataset"] = ["acs" ,"lidar", "pos","obs","goal_obs"]
-    config["hz"] = 1
-    config["traj_steps"] = 10
-    config["goal_steps"] = 500
+    config["dataset"] = ["acs" ,"lidar", "pos","obs", "goal", "goal_obs"]
+    config["hz"] = 5
+    config["traj_steps"] = 15
+    config["goal_steps"] = 10
     config["output_dir"] = args.output_dir
     config["bagfile_dir"] = args.rosbag_dir
     config["action_noise"] = 0.0
@@ -61,7 +61,7 @@ def main():
     for config_path in iglob(os.path.join(args.config_dir,"*")):
         config_name = os.path.basename(config_path)
         print(config_name)
-        command = "python3 ./rosbag2dataset_test.py --config /share/private/27th/hirotaka_saito/config3/" + config_name
+        command = "python3 ./rosbag2dataset.py --config /share/private/27th/hirotaka_saito/config3/" + config_name
 
         proc = subprocess.run(command,shell=True,stdout=subprocess.PIPE,text=True)
         print(proc.check_returncode())

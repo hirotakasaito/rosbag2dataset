@@ -135,16 +135,14 @@ if __name__ == '__main__':
 
                         goals = []
                         for idx, pose in enumerate(traj_pos):
-                            # if idx+config["goal_steps"]<len(traj_pos):
-                            if (idx+config["goal_steps"]) < len(traj_pos) and len(dataset["obs"]) > (t1+config["goal_steps"]):
-                                # goal = transform_pose(traj_pos[idx+config["goal_steps"]], pose)
-                                goal = transform_pose(traj_pos[-1], pose)
+                            # if (idx+config["goal_steps"]) < len(traj_pos) and len(dataset["obs"]) > (t1+config["goal_steps"]):
+                            goal = transform_pose(traj_pos[-1], pose)
                             goals.append(goal)
                         data = torch.tensor(goals, dtype=torch.float32)
                     elif data_name == "goal_obs":
-                        if (t1-1) < len(dataset["obs"]):
-                            traj_goal_obs = dataset["obs"][t1-1]
-                            data = torch.tensor(traj_goal_obs, dtype=torch.float32)
+                        # if (t1-1) < len(dataset["obs"]):
+                        traj_goal_obs = dataset["obs"][t1+config["goal_steps"]-1]
+                        data = torch.tensor(traj_goal_obs, dtype=torch.float32)
                     else:
                         traj_data = dataset[data_name][t0:t1]
                         data = torch.tensor(traj_data, dtype=torch.float32)

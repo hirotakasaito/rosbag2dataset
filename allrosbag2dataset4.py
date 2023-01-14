@@ -12,17 +12,17 @@ def main():
     print("\n" + "==== Config Creater ====" + "\n")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/badgr_base/")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test_goal_obs/")
+    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/all/")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/all")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config4/")
     args = parser.parse_args()
 
     config = {}
     config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom","front_laser/scan"]
-    config["dataset"] = ["acs" ,"lidar", "goal","obs","goal_obs"]
-    config["hz"] = 4
-    config["traj_steps"] = 8
-    config["goal_steps"] = 20
+    config["dataset"] = ["acs" ,"lidar", "pos","obs","goal"]
+    config["hz"] = 5
+    config["traj_steps"] = 15
+    config["goal_steps"] = 500
     config["output_dir"] = args.output_dir
     config["bagfile_dir"] = args.rosbag_dir
     config["action_noise"] = 0.0
@@ -34,6 +34,7 @@ def main():
     config["height"] = 224
     config["midas_type"] = "MiDaS_small"
     config["use_midas"] = False
+    config["divide_count"] = 2
 
     count = 1
     rosbag_names = []
