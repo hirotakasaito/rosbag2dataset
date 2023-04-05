@@ -14,7 +14,7 @@ def normalize_depth(depth, bits):
     if depth_max - depth_min > np.finfo("float").eps:
         out = max_val * (depth - depth_min) / (depth_max - depth_min)
     else:
-        out = np.zeros(depth.shape, dtype=depth.type)
+        out = np.zeros(depth.shape)
     if bits == 1:
         return out.astype("uint8")
     elif bits == 2:

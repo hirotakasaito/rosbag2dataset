@@ -5,27 +5,35 @@ import argparse
 import json
 import subprocess
 from glob import iglob
+from multiprocessing import Pool
+import shutil
 
+
+def each_convert2torch(config_name):
+    command = "python3 ./rosbag2dataset.py --config /share/private/27th/hirotaka_saito/config/" + config_name
+    proc = subprocess.run(command,shell=True,stdout=subprocess.PIPE,text=True)
 
 def main():
 
     print("\n" + "==== Config Creater ====" + "\n")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/syuukai/")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test2hz/")
+    parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/test/")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test/")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config/")
+    parser.add_argument('--num-core', type=int, default=10)
     args = parser.parse_args()
 
     config = {}
-    config["topics"] = ["camera/color/image_raw/compressed","t_frog/cmd_vel","front_right_camera/color/image_raw/compressed","front_left_camera/color/image_raw/compressed", "front_laser/scan", "t_frog/odom","imu/data","amcl_pose"]
-    config["dataset"] = ["acs" ,"lidar" ,"pos" ,"obs" ,"imu", "obsd","obsright" ,"obsrightd" ,"obsleftd", "obsleft","global_pos"]
+    config["topics"] = ["camera/color/image_raw/compressed", "front_laser/scan", "t_frog/odom"]
+    # config["dataset"] = ["acs" ,"lidar" ,"pos" ,"obs3", "obs3d", "goal", "goal_obs"]
+    # config["dataset"] = ["acs" ,"goal" ,"obs","goal_obs"]
     # config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom","imu/data"]
-    # config["dataset"] = ["acs" ,"lidar", "pos","obs","imu"]
+    config["dataset"] = ["acs" ,"lidar", "pos","obs"]
     #
-    config["hz"] = 4
-    config["traj_steps"] = 8
-    config["goal_steps"] = 500
+    config["hz"] = 5
+    config["traj_steps"] = 15
+    config["goal_steps"] = 0
     config["output_dir"] = args.output_dir
     config["bagfile_dir"] = args.rosbag_dir
     config["action_noise"] = 0.0
@@ -33,10 +41,12 @@ def main():
     config["upper_bound"] = [1.5, 1.5]
     config["collision_upper_bound"] = 1.3
     config["collision_lower_bound"] = 0.3
-    config["width"] = 256
-    config["height"] = 256
-    config["midas_type"] = "MiDaS_small"
-    config["use_midas"] = True
+    config["width"] = 224
+    config["height"] = 224
+    # config["midas_type"] = "MiDaS_small"
+    config["midas_type"] = "DPT_Large"
+    config["use_midas"] = False
+    config["divide_count"] = 1
 
     count = 1
     rosbag_names = []
@@ -59,17 +69,27 @@ def main():
         count += 1
 
     print("\n" + "==== Created Config ====" + "\n")
+    os.makedirs(args.config_dir, exist_ok=True)
 
-    for config_path in iglob(os.path.join(args.config_dir,"*")):
-        config_name = os.path.basename(config_path)
-        print(config_name)
-        command = "python3 ./rosbag2dataset.py --config /share/private/27th/hirotaka_saito/config/" + config_name
+    if args.num_core == 1:
+        for config_path in iglob(os.path.join(args.config_dir,"*")):
+            config_name = os.path.basename(config_path)
+            print(config_name)
+            command = "python3 ./rosbag2dataset.py --config /share/private/27th/hirotaka_saito/config/" + config_name
 
-        proc = subprocess.run(command,shell=True,stdout=subprocess.PIPE,text=True)
-        print(proc.check_returncode())
-        print(proc.stdout)
+            proc = subprocess.run(command,shell=True,stdout=subprocess.PIPE,text=True)
+            print(proc.check_returncode())
+            print(proc.stdout)
+    else:
+        config_names = []
+        for config_path in iglob(os.path.join(args.config_dir,"*")):
+            config_name = os.path.basename(config_path)
+            config_names.append(config_name)
 
+        with Pool(args.num_core) as p:
+            p.map(each_convert2torch, config_names)
 
+    shutil.rmtree(args.config_dir)
 
 if __name__ == "__main__":
     main()

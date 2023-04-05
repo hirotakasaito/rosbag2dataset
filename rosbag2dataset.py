@@ -70,13 +70,13 @@ if __name__ == '__main__':
                         dataset["obsright"] = convert_CompressedImage(sample_data[topic], config["height"], config["width"])
 
                         if use_midas:
-                            dataset["obsrightd"] = convert_CompressedImage_depth(dataset["obs"], midas, device, transform, config["height"], config["width"])
+                            dataset["obsrightd"] = convert_CompressedImage_depth(dataset["obsright"], midas, device, transform, config["height"], config["width"])
 
                     if topic == "front_left_camera/color/image_raw/compressed":
                         dataset["obsleft"] = convert_CompressedImage(sample_data[topic], config["height"], config["width"])
 
                         if use_midas:
-                            dataset["obsleftd"] = convert_CompressedImage_depth(dataset["obs"], midas , device, transform, config["height"], config["width"])
+                            dataset["obsleftd"] = convert_CompressedImage_depth(dataset["obsleft"], midas , device, transform, config["height"], config["width"])
 
                 elif topic_type == "":
                     print("==== convert image ====")
@@ -105,12 +105,38 @@ if __name__ == '__main__':
             else:
                 num_steps = len(dataset["obs"])
             num_traj = int(num_steps/config["traj_steps"])
+
+            use_obs3_img_flag = False
+            use_obs3d_img_flag = False
+
+            for data_name in config["dataset"]:
+                if data_name == "obs3":
+                    use_obs3_img_flag = True
+                    concat_imgs = []
+                    for obs_front, obs_right, obs_left in zip(dataset["obs"], dataset["obsright"], dataset["obsleft"]):
+                        concat_img = cv2.hconcat([obs_left, obs_front, obs_right])
+                        concat_imgs.append(concat_img)
+                    dataset["obs3"] = concat_imgs
+
+                if data_name == "obs3d":
+                    use_obs3d_img_flag = True
+                    concat_imgs = []
+                    for obs_front, obs_right, obs_left in zip(dataset["obsd"], dataset["obsrightd"], dataset["obsleftd"]):
+                        concat_img = cv2.hconcat([obs_left, obs_front, obs_right])
+                        concat_imgs.append(concat_img)
+                    dataset["obs3d"] = concat_imgs
+
             for idx in tqdm(range(num_traj)):
                 file_name = ("%d.pt" % (file_count))
                 t0 = idx*config["traj_steps"]
                 t1 = t0+config["traj_steps"]
                 for data_name in config["dataset"]:
                     path = os.path.join(out_dir, data_name, file_name)
+
+                    if use_obs3_img_flag and data_name == "obs":
+                        continue
+                    if use_obs3d_img_flag and data_name == "obsd":
+                        continue
 
                     if data_name == "pos":
                         traj_pos = dataset["pos"][t0:t1]
