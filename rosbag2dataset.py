@@ -22,11 +22,12 @@ if __name__ == '__main__':
 
     model_type = config["midas_type"]
     use_midas = config["use_midas"]
+    use_midas_point = config["use_midas_point"]
     divide_count = config["divide_count"]
     hz = config["hz"]
     divide_time = 1.0 / hz /divide_count
 
-    if use_midas:
+    if use_midas or use_midas_point:
         midas = torch.hub.load("intel-isl/MiDaS", model_type)
         midas_transforms = torch.hub.load("intel-isl/MiDaS", "transforms")
         device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -65,6 +66,8 @@ if __name__ == '__main__':
                         dataset["obs"] = convert_CompressedImage(sample_data[topic], config["height"], config["width"])
                         if use_midas:
                             dataset["obsd"] = convert_CompressedImage_depth(dataset["obs"], midas, device, transform, config["height"], config["width"])
+                        if use_midas_point:
+                            dataset["midas_point"] = convert_CompressedImage_depth2point(dataset["obs"], midas, device, transform, config["height"], config["width"])
 
                     if topic == "front_right_camera/color/image_raw/compressed":
                         dataset["obsright"] = convert_CompressedImage(sample_data[topic], config["height"], config["width"])

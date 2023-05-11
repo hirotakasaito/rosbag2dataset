@@ -19,9 +19,9 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--rosbag-dir", type=str, default="/share/private/27th/hirotaka_saito/bagfile/sq2/d_kan1/test/")
-    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test/")
+    parser.add_argument("-o", "--output-dir", type=str, default="/share/private/27th/hirotaka_saito/dataset/sq2/d_kan1/test_midas_point/")
     parser.add_argument("-c", "--config-dir", type=str, default="/share/private/27th/hirotaka_saito/config/")
-    parser.add_argument('--num-core', type=int, default=10)
+    parser.add_argument('--num-core', type=int, default=1)
     args = parser.parse_args()
 
     config = {}
@@ -29,8 +29,7 @@ def main():
     # config["dataset"] = ["acs" ,"lidar" ,"pos" ,"obs3", "obs3d", "goal", "goal_obs"]
     # config["dataset"] = ["acs" ,"goal" ,"obs","goal_obs"]
     # config["topics"] = ["camera/color/image_raw/compressed","front_laser/scan","t_frog/cmd_vel","t_frog/odom","imu/data"]
-    config["dataset"] = ["acs" ,"lidar", "pos","obs"]
-    #
+    config["dataset"] = ["acs" ,"lidar", "pos","obs", "midas_point"]
     config["hz"] = 5
     config["traj_steps"] = 15
     config["goal_steps"] = 0
@@ -46,6 +45,7 @@ def main():
     # config["midas_type"] = "MiDaS_small"
     config["midas_type"] = "DPT_Large"
     config["use_midas"] = False
+    config["use_midas_point"] = True
     config["divide_count"] = 1
 
     count = 1

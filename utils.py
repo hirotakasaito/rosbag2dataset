@@ -65,6 +65,24 @@ def convert_CompressedImage_depth(obs, midas, device, transform, height=None, wi
 
     return convert_obsds
 
+def convert_obsd2point(obsd):
+    h, w = obsd.shape
+    obsd = obsd[:int(h/2), :]
+    obsd_point = np.amax(obsd, axis=0)
+    obsd_point_var = np.var(obsd_point)
+    if obsd_point_var < 0.1:
+        obsd_point = np.amin(obsd, axis=0)
+    print(obsd_point)
+    return obsd_point
+
+def convert_CompressedImage_depth2point(obs, midas, device, transform, height=None, width=None):
+    obsds = convert_CompressedImage_depth(obs, midas, device, transform, height, width)
+    obsd_points = []
+    for obsd in obsds:
+        obsd_points.append(convert_obsd2point(obsd))
+    return obsd_points
+
+
 def convert_Odometry(data, action_noise, lower_bound, upper_bound):
     acs = []
     pos = []
